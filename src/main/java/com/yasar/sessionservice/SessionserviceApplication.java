@@ -8,6 +8,7 @@ public class SessionserviceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SessionserviceApplication.class, args);
+		System.out.println("Session Service ayakta");
 	}
 
 }
