@@ -38,9 +38,18 @@ public class SessionService {
         redisTemplate.opsForValue().set(SESSION_KEY_PREFIX + userId, activeSession);
     }
 
-    // Kullanıcı çıkış yaptığında çağrılacak
-    public void removeSession(Long userId) {
-        redisTemplate.delete(SESSION_KEY_PREFIX + userId);
+    public boolean removeSession(Long userId) {
+        String key = SESSION_KEY_PREFIX + userId;
+
+        // Redis'te gerçekten bir session var mı?
+        Boolean exists = redisTemplate.hasKey(key);
+        if (exists != null && exists) {
+            redisTemplate.delete(key);
+            return true;
+        }
+
+        // Yoksa silme ve false döndür
+        return false;
     }
 
     // Redis'ten aktif oturum bilgisini getir

@@ -34,7 +34,7 @@ public class UserService {
         return user;
     }
 
-    public void logout(Long userId) {
-        sessionService.removeSession(userId);
+    public boolean logout(Long userId) {
+        return sessionService.removeSession(userId);
     }
 }

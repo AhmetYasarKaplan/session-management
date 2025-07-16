@@ -26,7 +26,11 @@ public class AuthController {
     // LOGOUT
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestParam Long userId) {
-        userService.logout(userId);
-        return ResponseEntity.ok("Logged out successfully.");
+        boolean result = userService.logout(userId);
+        if (result) {
+            return ResponseEntity.ok("Logged out successfully.");
+        } else {
+            return ResponseEntity.status(404).body("No active session found for user.");
+        }
     }
 }
