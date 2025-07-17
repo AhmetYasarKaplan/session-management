@@ -4,6 +4,7 @@ import com.yasar.sessionservice.model.User;
 import com.yasar.sessionservice.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,11 +15,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SessionService sessionService;
+    private final PasswordEncoder passwordEncoder;
 
     public User login(String username, String password, HttpServletRequest request) {
         Optional<User> userOpt = userRepository.findByUsername(username);
 
-        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(password)) {
+        if (userOpt.isEmpty() || !passwordEncoder.matches(password, userOpt.get().getPassword())) {
             throw new RuntimeException("Invalid username or password");
         }
 
