@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 //giriş geçmişi logu bir nevi
 public class LoginSession {
-    // Her giriş için IP, cihaz bilgisi ve tarih bilgisi saklanır.
+    // her giriş için IP cihaz bilgisi ve tarih bilgisi saklanır.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

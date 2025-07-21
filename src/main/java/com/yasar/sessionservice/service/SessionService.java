@@ -25,15 +25,15 @@ public class SessionService {
 
     private static final String SESSION_KEY_PREFIX = "active::user::";
 
-    // Kullanıcı giriş yaptığında çağrılacak
+    // burası kullanıcı giriş yaptığında çağrılıyor !!!!!
     public void createSession(Long userId, String ipAddress, String userAgent) {
         LocalDateTime now = LocalDateTime.now();
 
-        // Giriş geçmişine yaz (PostgreSQL)
+        // postgrsqle giriş geçmişine yaz
         LoginSession loginSession = new LoginSession(null, userId, ipAddress, userAgent, now);
         loginSessionRepository.save(loginSession);
 
-        // Aktif oturumu Redis'e yaz
+        // o anki aktif oturumu redise yaz
         ActiveSession activeSession = new ActiveSession(userId, ipAddress, userAgent, now);
         redisTemplate.opsForValue().set(SESSION_KEY_PREFIX + userId, activeSession);
     }
@@ -41,14 +41,14 @@ public class SessionService {
     public boolean removeSession(Long userId) {
         String key = SESSION_KEY_PREFIX + userId;
 
-        // Redis'te gerçekten bir session var mı?
+        // rediste gerçekten bir session var mı?
         Boolean exists = redisTemplate.hasKey(key);
-        if (exists != null && exists) {
+        if (exists) { // exists !=null
             redisTemplate.delete(key);
             return true;
         }
 
-        // Yoksa silme ve false döndür
+        // yoksa silme ve false döndür
         return false;
     }
 

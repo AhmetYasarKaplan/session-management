@@ -17,7 +17,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        // Kullanıcı adı daha önce alınmış mı kontrol et
+        // kullanıcı adı daha önce alınmış mı kontrol et
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body(null); // 400 Bad Request
         }

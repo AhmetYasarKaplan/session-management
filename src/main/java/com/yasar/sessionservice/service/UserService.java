@@ -26,11 +26,11 @@ public class UserService {
 
         User user = userOpt.get();
 
-        // IP ve user-agent bilgisi alınıyor
+        // IP ve user agent bilgisi alınıyor
         String ipAddress = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
 
-        // Oturum başlatılıyor
+        // oturum başlatılıyor
         sessionService.createSession(user.getId(), ipAddress, userAgent);
 
         return user;

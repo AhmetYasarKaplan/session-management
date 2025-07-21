@@ -20,6 +20,8 @@ public class AuthController {
                                       @RequestParam String password,
                                       HttpServletRequest request) {
         User user = userService.login(username, password, request);
+        user.setPassword(null); // hashed şifreyi returnde göstermemek için null yapıyoruz
+
         return ResponseEntity.ok(user);
     }
 

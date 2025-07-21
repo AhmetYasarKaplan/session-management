@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface LoginSessionRepository extends JpaRepository<LoginSession, Long> {
     List<LoginSession> findByUserIdOrderByLoginAtDesc(Long userId);
-    // bir kullanıcının login geçmişini zamana göre sıralı getirebileceğiz.
+    // bir kullanıcının login geçmişini zamana göre sıralı getirebileceğiz
 }
