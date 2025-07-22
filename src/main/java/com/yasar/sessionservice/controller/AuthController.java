@@ -1,7 +1,9 @@
 package com.yasar.sessionservice.controller;
 
 import com.yasar.sessionservice.model.User;
+import com.yasar.sessionservice.model.LoginResponse;
 import com.yasar.sessionservice.service.UserService;
+import com.yasar.sessionservice.config.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +15,18 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     // LOGIN
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String username,
-                                      @RequestParam String password,
-                                      HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestParam String username,
+                                               @RequestParam String password,
+                                               HttpServletRequest request) {
         User user = userService.login(username, password, request);
-        user.setPassword(null); // hashed şifreyi returnde göstermemek için null yapıyoruz
-
-        return ResponseEntity.ok(user);
+        // şifre bilgisini dışarı verme!!!!
+        user.setPassword(null);
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername());
+        return ResponseEntity.ok(new LoginResponse(token, user));
     }
 
     // LOGOUT
