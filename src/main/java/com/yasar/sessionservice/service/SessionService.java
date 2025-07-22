@@ -33,7 +33,7 @@ public class SessionService {
         LoginSession loginSession = new LoginSession(null, userId, ipAddress, userAgent, now);
         loginSessionRepository.save(loginSession);
 
-        // o anki aktif oturumu redise yaz
+        // o anki aktif oturumu redise yaz zart zurt!!!!
         ActiveSession activeSession = new ActiveSession(userId, ipAddress, userAgent, now);
         redisTemplate.opsForValue().set(SESSION_KEY_PREFIX + userId, activeSession);
     }

@@ -7,6 +7,7 @@ import com.yasar.sessionservice.config.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,6 +32,21 @@ public class AuthController {
 
     // LOGOUT
     @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        String token = jwtUtil.extractTokenFromRequest(request);
+        Long userId = jwtUtil.extractUserId(token);
+
+        boolean result = userService.logout(userId);
+
+        if (result) {
+            return ResponseEntity.ok("Logged out successfully.");
+        } else {
+            return ResponseEntity.status(404).body("No active session found for user.");
+        }
+    }
+
+    /*
+    @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestParam Long userId) {
         boolean result = userService.logout(userId);
         if (result) {
@@ -39,4 +55,5 @@ public class AuthController {
             return ResponseEntity.status(404).body("No active session found for user.");
         }
     }
+    */
 }
