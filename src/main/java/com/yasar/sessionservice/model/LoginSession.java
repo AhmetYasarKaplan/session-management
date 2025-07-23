@@ -22,3 +22,5 @@ public class LoginSession {
     private String userAgent; // cihaz bilgisi
     private LocalDateTime loginAt;
 }
+
+// eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjYiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc1MzI1MDA2OSwiZXhwIjoxNzUzMjUwMzY5fQ.3EezrT_-HJdOJRxci9vcirvrDWbiuGlcdL7_nor88ys

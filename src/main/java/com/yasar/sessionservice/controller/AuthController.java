@@ -19,14 +19,15 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     // LOGIN
+    // TODO : logout olmayan kullanıcılar için login işlemi yapılmamalı
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestParam String username,
                                                @RequestParam String password,
                                                HttpServletRequest request) {
         User user = userService.login(username, password, request);
-        // şifre bilgisini dışarı verme!!!!
+        // şifre bilgisini dışarı vermiyoruz yoksa gözüküyordu!!!!
         user.setPassword(null);
-        String token = jwtUtil.generateToken(user.getId(), user.getUsername());
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
         return ResponseEntity.ok(new LoginResponse(token, user));
     }
 

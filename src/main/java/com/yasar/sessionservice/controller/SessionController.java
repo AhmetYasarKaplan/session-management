@@ -46,6 +46,7 @@ public class SessionController {
         return ResponseEntity.ok(history);
     }
 
+    // bütün aktif oturumları listelemek için bu. redisten alıyor :(
     @GetMapping("/all-active")
     public ResponseEntity<List<ActiveSession>> getAllActiveSessions() {
         List<ActiveSession> sessions = sessionService.getAllActiveSessions();

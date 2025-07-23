@@ -23,5 +23,9 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String role; //  "USER" veya "ADMIN" gibi olcak!! sadece admin tüm aktif oturumları görebilecek
+
 }
 

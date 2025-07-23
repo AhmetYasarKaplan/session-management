@@ -17,6 +17,11 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
+
+        if (user.getRole() == null) {
+            user.setRole("USER"); // default rol
+        }
+
         // kullanıcı adı daha önce alınmış mı kontrol et
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body(null); // 400 Bad Request
