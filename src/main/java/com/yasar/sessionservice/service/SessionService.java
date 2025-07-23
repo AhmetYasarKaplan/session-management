@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +65,27 @@ public class SessionService {
             return mapper.convertValue(raw, ActiveSession.class);
         }
         return (ActiveSession) raw;
+    }
+
+    public List<ActiveSession> getAllActiveSessions() {
+        Set<String> keys = redisTemplate.keys("active::user::*");
+
+        if (keys == null || keys.isEmpty()) {
+            return List.of();
+        }
+
+        return keys.stream()
+                .map(key -> {
+                    Object raw = redisTemplate.opsForValue().get(key);
+                    if (raw instanceof LinkedHashMap) {
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.registerModule(new JavaTimeModule());
+                        return mapper.convertValue(raw, ActiveSession.class);
+                    } else {
+                        return (ActiveSession) raw;
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }
 

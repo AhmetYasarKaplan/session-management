@@ -46,4 +46,10 @@ public class SessionController {
         return ResponseEntity.ok(history);
     }
 
+    @GetMapping("/all-active")
+    public ResponseEntity<List<ActiveSession>> getAllActiveSessions() {
+        List<ActiveSession> sessions = sessionService.getAllActiveSessions();
+        return ResponseEntity.ok(sessions);
+    }
+
 }
