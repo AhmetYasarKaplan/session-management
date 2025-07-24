@@ -7,6 +7,7 @@ import com.yasar.sessionservice.service.SessionService;
 import com.yasar.sessionservice.repository.LoginSessionRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/sessions")
 @RequiredArgsConstructor
+@Slf4j
 public class SessionController {
 
     private final JwtUtil jwtUtil;
@@ -26,6 +28,7 @@ public class SessionController {
     public ResponseEntity<ActiveSession> getActiveSession(HttpServletRequest request) {
         String token = jwtUtil.extractTokenFromRequest(request);
         Long userId = jwtUtil.extractUserId(token);
+        log.debug("Fetching active session for user: {}", userId);
 
         ActiveSession session = sessionService.getActiveSession(userId);
         if (session == null) {
@@ -43,6 +46,7 @@ public class SessionController {
         Long userId = jwtUtil.extractUserId(token);
 
         List<LoginSession> history = loginSessionRepository.findByUserIdOrderByLoginAtDesc(userId);
+        log.debug("History size for user {}: {}", userId, history.size());
         return ResponseEntity.ok(history);
     }
 
@@ -50,6 +54,7 @@ public class SessionController {
     @GetMapping("/all-active")
     public ResponseEntity<List<ActiveSession>> getAllActiveSessions() {
         List<ActiveSession> sessions = sessionService.getAllActiveSessions();
+        log.info("Total active sessions: {}", sessions.size());
         return ResponseEntity.ok(sessions);
     }
 

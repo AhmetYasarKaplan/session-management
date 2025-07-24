@@ -6,6 +6,7 @@ import com.yasar.sessionservice.model.ActiveSession;
 import com.yasar.sessionservice.model.LoginSession;
 import com.yasar.sessionservice.repository.LoginSessionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SessionService {
 
     private final LoginSessionRepository loginSessionRepository;
@@ -30,6 +32,7 @@ public class SessionService {
 
     // burası kullanıcı giriş yaptığında çağrılıyor !!!!!
     public void createSession(Long userId, String ipAddress, String userAgent) {
+        log.info("Creating session for user: {}", userId);
         LocalDateTime now = LocalDateTime.now();
 
         // postgrsqle giriş geçmişine yaz
@@ -39,6 +42,7 @@ public class SessionService {
         // o anki aktif oturumu redise yaz zart zurt!!!!
         ActiveSession activeSession = new ActiveSession(userId, ipAddress, userAgent, now);
         redisTemplate.opsForValue().set(SESSION_KEY_PREFIX + userId, activeSession);
+        log.debug("Session stored in Redis for user: {}", userId);
     }
 
     public boolean removeSession(Long userId) {
@@ -48,6 +52,7 @@ public class SessionService {
         Boolean exists = redisTemplate.hasKey(key);
         if (exists) { // exists !=null
             redisTemplate.delete(key);
+            log.info("Session removed for user: {}", userId);
             return true;
         }
 
@@ -57,6 +62,7 @@ public class SessionService {
 
     // Redis'ten aktif oturum bilgisini getir
     public ActiveSession getActiveSession(Long userId) {
+        log.debug("Fetching active session for user: {}", userId);
         Object raw = redisTemplate.opsForValue().get(SESSION_KEY_PREFIX + userId);
         if (raw instanceof LinkedHashMap) {
             // manuel dönüştürme
@@ -68,6 +74,7 @@ public class SessionService {
     }
 
     public List<ActiveSession> getAllActiveSessions() {
+        log.debug("Fetching all active sessions");
         Set<String> keys = redisTemplate.keys("active::user::*");
 
         if (keys == null || keys.isEmpty()) {

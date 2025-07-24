@@ -6,6 +6,7 @@ import com.yasar.sessionservice.service.UserService;
 import com.yasar.sessionservice.config.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final UserService userService;
@@ -24,10 +26,12 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestParam String username,
                                                @RequestParam String password,
                                                HttpServletRequest request) {
+        log.info("Login request for user: {}", username);
         User user = userService.login(username, password, request);
         // şifre bilgisini dışarı vermiyoruz yoksa gözüküyordu!!!!
         user.setPassword(null);
         String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
+        log.info("User {} logged in", username);
         return ResponseEntity.ok(new LoginResponse(token, user));
     }
 
@@ -37,9 +41,11 @@ public class AuthController {
         String token = jwtUtil.extractTokenFromRequest(request);
         Long userId = jwtUtil.extractUserId(token);
 
+        log.info("Logout request for user: {}", userId);
         boolean result = userService.logout(userId);
 
         if (result) {
+            log.info("User {} logged out", userId);
             return ResponseEntity.ok("Logged out successfully.");
         } else {
             return ResponseEntity.status(404).body("No active session found for user.");
